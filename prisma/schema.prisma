@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  name             String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  resumes          Resume[]
+  jobDescriptions  JobDescription[]
+  interviewSessions InterviewSession[]
+  chatMessages     ChatMessage[]
+  roadmaps         CareerRoadmap[]
+}
+
+model Resume {
+  id                 String           @id @default(uuid())
+  userId             String
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title              String
+  fileUrl            String?
+  fileType           String           @default("pdf")
+  parsedContent      String           // Raw or JSON stringified parsed text
+  completenessScore  Float            @default(0)
+  sectionQuality     Float            @default(0)
+  formattingQuality  Float            @default(0)
+  atsReadability     Float            @default(0)
+  overallAtsScore    Float            @default(0)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  sections           ResumeSection[]
+  versions           ResumeVersion[]
+  analyses           ResumeAnalysis[]
+  userSkills         UserSkill[]
+  projects           Project[]
+  jobMatches         JobMatch[]
+}
+
+model ResumeVersion {
+  id           String   @id @default(uuid())
+  resumeId     String
+  resume       Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  versionName  String
+  targetJob    String?
+  contentJson  String   // JSON string of full resume payload
+  atsScore     Float    @default(0)
+  changes      String?  // Summary of edits/optimizations
+  createdAt    DateTime @default(now())
+}
+
+model ResumeSection {
+  id          String   @id @default(uuid())
+  resumeId    String
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  sectionType String   // e.g., SUMMARY, EXPERIENCE, EDUCATION, SKILLS, PROJECTS, CERTIFICATIONS
+  content     String
+  embedding   String?  // JSON stringified vector array
+  order       Int      @default(0)
+}
+
+model JobDescription {
+  id             String           @id @default(uuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobTitle       String
+  company        String?
+  rawText        String
+  requiredSkills String           // JSON stringified array of skills
+  createdAt      DateTime         @default(now())
+  jobMatches     JobMatch[]
+  interviewSessions InterviewSession[]
+}
+
+model JobMatch {
+  id               String         @id @default(uuid())
+  resumeId         String
+  resume           Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescriptionId String
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+  matchScore       Float
+  keywordMatch     Float
+  skillsMatch      Float
+  experienceMatch  Float
+  projectMatch     Float
+  educationMatch   Float
+  explanationJson  String         // JSON detailed breakdown of positive & negative factors
+  createdAt        DateTime       @default(now())
+  skillGaps        SkillGap[]
+}
+
+model ResumeAnalysis {
+  id                   String   @id @default(uuid())
+  resumeId             String
+  resume               Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  overallScore         Float
+  completenessScore    Float
+  readabilityScore     Float
+  formattingScore      Float
+  positiveFactorsJson  String   // JSON stringified string[]
+  negativeFactorsJson  String   // JSON stringified string[]
+  createdAt            DateTime @default(now())
+}
+
+model Skill {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  category   String      @default("TECHNICAL") // TECHNICAL, SOFT, DOMAIN
+  userSkills UserSkill[]
+}
+
+model UserSkill {
+  id          String   @id @default(uuid())
+  resumeId    String
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  skillId     String
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  proficiency String?  // BEGINNER, INTERMEDIATE, ADVANCED
+  isVerified  Boolean  @default(true)
+}
+
+model SkillGap {
+  id          String   @id @default(uuid())
+  jobMatchId  String
+  jobMatch    JobMatch @relation(fields: [jobMatchId], references: [id], onDelete: Cascade)
+  skillName   String
+  category    String   // CRITICAL, IMPORTANT, NICE_TO_HAVE
+  suggestion  String
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  resumeId    String
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  techStack   String   // JSON array string
+  relevance   Float    @default(0)
+}
+
+model InterviewSession {
+  id               String              @id @default(uuid())
+  userId           String
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobDescriptionId String?
+  jobDescription   JobDescription?     @relation(fields: [jobDescriptionId], references: [id], onDelete: SetNull)
+  roleTitle        String
+  status           String              @default("ACTIVE") // ACTIVE, COMPLETED
+  createdAt        DateTime            @default(now())
+  questions        InterviewQuestion[]
+}
+
+model InterviewQuestion {
+  id                  String             @id @default(uuid())
+  sessionId           String
+  session             InterviewSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  category            String             // TECHNICAL, PROJECT, HR, BEHAVIORAL, CODING, SQL, SYSTEM_DESIGN
+  question            String
+  whyAsked            String
+  expectedAnswerPoints String            // JSON array string
+  sampleAnswer        String
+  followUpQuestions   String             // JSON array string
+  order               Int                @default(0)
+  answers             InterviewAnswer[]
+}
+
+model InterviewAnswer {
+  id           String            @id @default(uuid())
+  questionId   String
+  question     InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userAnswer   String
+  score        Float
+  strengths    String            // JSON array string
+  weaknesses   String            // JSON array string
+  betterAnswer String
+  createdAt    DateTime          @default(now())
+}
+
+model CareerRoadmap {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetRole  String
+  day7Json    String   // JSON array of roadmap tasks
+  day30Json   String   // JSON array of roadmap tasks
+  day60Json   String   // JSON array of roadmap tasks
+  createdAt   DateTime @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sender    String   // USER, AI
+  message   String
+  createdAt DateTime @default(now())
+}
