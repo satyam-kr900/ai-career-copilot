@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import Header from '@/components/layout/Header';
 import ScoreChart from '@/components/analytics/ScoreChart';
-import { History, TrendingUp, Layers, Award } from 'lucide-react';
+import { History, TrendingUp } from 'lucide-react';
 
 export default function ResumeHistoryPage() {
   const versions = [
@@ -37,41 +36,37 @@ export default function ResumeHistoryPage() {
   ];
 
   return (
-    <div className="space-y-6 pb-12">
-      <Header title="Resume Version Control & Score History" />
+    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-4 sm:py-6 pb-12">
+      <ScoreChart />
 
-      <div className="px-6 space-y-6">
-        <ScoreChart />
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <h3 className="font-bold text-slate-100 text-xs sm:text-sm flex items-center gap-2">
+          <History className="w-4 h-4 text-indigo-400 shrink-0" /> Target Role Resume Versions
+        </h3>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h3 className="font-bold text-slate-100 text-sm flex items-center gap-2">
-            <History className="w-4 h-4 text-indigo-400" /> Target Role Resume Versions
-          </h3>
-
-          <div className="space-y-3">
-            {versions.map((ver) => (
-              <div key={ver.id} className="bg-slate-850 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-slate-100 text-sm">{ver.name}</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-semibold">
-                      {ver.targetJob}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400">{ver.changes}</p>
+        <div className="space-y-3">
+          {versions.map((ver) => (
+            <div key={ver.id} className="bg-slate-850 border border-slate-800 rounded-xl p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <span className="font-bold text-slate-100 text-xs sm:text-sm">{ver.name}</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-semibold">
+                    {ver.targetJob}
+                  </span>
                 </div>
-
-                <div className="flex items-center gap-4 shrink-0">
-                  <div className="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 text-xs">
-                    <span className="text-slate-400">Before: <span className="font-bold text-rose-400">{ver.beforeScore}</span></span>
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-slate-400">After: <span className="font-bold text-emerald-400">{ver.afterScore}</span></span>
-                  </div>
-                  <span className="text-xs text-slate-500">{ver.date}</span>
-                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">{ver.changes}</p>
               </div>
-            ))}
-          </div>
+
+              <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-0 border-slate-800">
+                <div className="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 text-xs">
+                  <span className="text-slate-400">Before: <span className="font-bold text-rose-400">{ver.beforeScore}</span></span>
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-slate-400">After: <span className="font-bold text-emerald-400">{ver.afterScore}</span></span>
+                </div>
+                <span className="text-[11px] sm:text-xs text-slate-500">{ver.date}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

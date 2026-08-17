@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { BulletOptimization } from '@/types';
-import { Sparkles, ArrowRight, Check, Copy } from 'lucide-react';
+import { Sparkles, Check, Copy } from 'lucide-react';
 
 export default function BulletOptimizer() {
   const [bullets, setBullets] = useState<string[]>([
@@ -35,11 +35,11 @@ export default function BulletOptimizer() {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-400" /> AI Resume Bullet Point Optimizer
+          <h3 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" /> AI Resume Bullet Point Optimizer
           </h3>
           <p className="text-xs text-slate-400 mt-1">
             Transforms weak bullet points into high-impact ATS bullet points using action verbs and metric placeholders.
@@ -49,14 +49,14 @@ export default function BulletOptimizer() {
         <button
           onClick={handleOptimize}
           disabled={loading}
-          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-2 transition disabled:opacity-50"
+          className="w-full sm:w-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-2 transition disabled:opacity-50 shrink-0"
         >
           {loading ? 'Optimizing...' : 'Improve My Resume Bullets'}
         </button>
       </div>
 
       {/* Editable Bullets Input */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <label className="text-xs font-semibold text-slate-300">Original Bullet Points:</label>
         {bullets.map((bullet, idx) => (
           <input
@@ -68,18 +68,18 @@ export default function BulletOptimizer() {
               updated[idx] = e.target.value;
               setBullets(updated);
             }}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
           />
         ))}
       </div>
 
       {/* Results Comparison View */}
       {optimizations && (
-        <div className="space-y-4 pt-4 border-t border-slate-800">
-          <h4 className="text-sm font-bold text-slate-200">Before vs. After Optimization:</h4>
+        <div className="space-y-4 pt-3 sm:pt-4 border-t border-slate-800">
+          <h4 className="text-xs sm:text-sm font-bold text-slate-200">Before vs. After Optimization:</h4>
           {optimizations.map((item, idx) => (
-            <div key={idx} className="bg-slate-850 border border-slate-800 rounded-xl p-4 space-y-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div key={idx} className="bg-slate-850 border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div className="bg-slate-900 border border-slate-800 rounded-lg p-3">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-rose-400 block mb-1">ORIGINAL</span>
                   <p className="text-xs text-slate-400">{item.original}</p>
@@ -87,7 +87,7 @@ export default function BulletOptimizer() {
 
                 <div className="bg-emerald-950/20 border border-emerald-500/30 rounded-lg p-3 relative group">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">AI IMPROVED VERSION</span>
-                  <p className="text-xs text-emerald-200 font-medium leading-relaxed">{item.improved}</p>
+                  <p className="text-xs text-emerald-200 font-medium leading-relaxed pr-8">{item.improved}</p>
                   
                   <button
                     onClick={() => {
@@ -102,7 +102,7 @@ export default function BulletOptimizer() {
                 </div>
               </div>
 
-              <div className="bg-slate-900/60 rounded-lg p-3 text-xs border border-slate-800/60">
+              <div className="bg-slate-900/60 rounded-lg p-2.5 sm:p-3 text-xs border border-slate-800/60">
                 <span className="font-semibold text-indigo-300">Why It Is Better: </span>
                 <span className="text-slate-400">{item.reasoning}</span>
               </div>

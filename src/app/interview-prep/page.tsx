@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from '@/components/layout/Header';
 import MockInterviewChat from '@/components/interview/MockInterviewChat';
-import { MessageSquare, Award, Sparkles, CheckCircle2 } from 'lucide-react';
+import { MessageSquare, Award, Sparkles } from 'lucide-react';
 
 export default function InterviewPrepPage() {
   const [activeTab, setActiveTab] = useState<'mock' | 'project'>('mock');
@@ -42,71 +41,67 @@ export default function InterviewPrepPage() {
   ];
 
   return (
-    <div className="space-y-6 pb-12">
-      <Header title="AI Interview Preparation & Mock Interviewer" />
+    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-4 sm:py-6 pb-12">
+      {/* Navigation Tabs */}
+      <div className="flex flex-wrap gap-2 sm:gap-3 border-b border-slate-800 pb-3">
+        <button
+          onClick={() => setActiveTab('mock')}
+          className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition ${
+            activeTab === 'mock'
+              ? 'bg-indigo-600 border-indigo-500 text-white'
+              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <MessageSquare className="w-4 h-4 shrink-0" /> Interactive Mock Interview
+        </button>
 
-      <div className="px-6 space-y-6">
-        {/* Navigation Tabs */}
-        <div className="flex gap-3 border-b border-slate-800 pb-3">
-          <button
-            onClick={() => setActiveTab('mock')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border transition ${
-              activeTab === 'mock'
-                ? 'bg-indigo-600 border-indigo-500 text-white'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <MessageSquare className="w-4 h-4" /> Start Interactive Mock Interview
-          </button>
+        <button
+          onClick={() => setActiveTab('project')}
+          className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition ${
+            activeTab === 'project'
+              ? 'bg-indigo-600 border-indigo-500 text-white'
+              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Award className="w-4 h-4 shrink-0" /> Project Relevance Analyzer
+        </button>
+      </div>
 
-          <button
-            onClick={() => setActiveTab('project')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border transition ${
-              activeTab === 'project'
-                ? 'bg-indigo-600 border-indigo-500 text-white'
-                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Award className="w-4 h-4" /> Project Relevance Analyzer
-          </button>
-        </div>
-
-        {activeTab === 'mock' ? (
-          <MockInterviewChat questions={initialQuestions} />
-        ) : (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div>
-                <h3 className="font-bold text-slate-100 text-base">Project Target Job Relevance Analyzer</h3>
-                <p className="text-xs text-slate-400">Analyzes candidate projects against job specifications</p>
-              </div>
-              <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm">
-                Project Relevance: 94%
-              </div>
+      {activeTab === 'mock' ? (
+        <MockInterviewChat questions={initialQuestions} />
+      ) : (
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+            <div>
+              <h3 className="font-bold text-slate-100 text-sm sm:text-base">Project Target Job Relevance Analyzer</h3>
+              <p className="text-xs text-slate-400">Analyzes candidate projects against job specifications</p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-              <div className="bg-slate-850 border border-slate-800 rounded-xl p-4 space-y-2">
-                <span className="font-bold text-indigo-300 block">Project: KnowSamvidhan AI</span>
-                <p className="text-slate-400">Tech Stack: Next.js, TypeScript, Prisma, Supabase, AI Embeddings</p>
-                <div className="pt-2">
-                  <span className="font-bold text-emerald-400 block mb-1">Matching Target Tech:</span>
-                  <p className="text-slate-300">• Next.js, TypeScript, Supabase, AI RAG Pipeline</p>
-                </div>
-              </div>
-
-              <div className="bg-indigo-950/30 border border-indigo-500/20 rounded-xl p-4 space-y-2">
-                <span className="font-bold text-indigo-300 block flex items-center gap-1">
-                  <Sparkles className="w-4 h-4" /> Interview Presentation Advice:
-                </span>
-                <p className="text-indigo-200 leading-relaxed">
-                  "When explaining this project to hiring managers, frame it around vector embedding latency and database indexing. Highlight how you optimized nearest-neighbor query times for instant user responses."
-                </p>
-              </div>
+            <div className="self-start sm:self-auto px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs sm:text-sm shrink-0">
+              Project Relevance: 94%
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-xs">
+            <div className="bg-slate-850 border border-slate-800 rounded-xl p-3.5 sm:p-4 space-y-2">
+              <span className="font-bold text-indigo-300 block">Project: KnowSamvidhan AI</span>
+              <p className="text-slate-400">Tech Stack: Next.js, TypeScript, Prisma, Supabase, AI Embeddings</p>
+              <div className="pt-2">
+                <span className="font-bold text-emerald-400 block mb-1">Matching Target Tech:</span>
+                <p className="text-slate-300">• Next.js, TypeScript, Supabase, AI RAG Pipeline</p>
+              </div>
+            </div>
+
+            <div className="bg-indigo-950/30 border border-indigo-500/20 rounded-xl p-3.5 sm:p-4 space-y-2">
+              <span className="font-bold text-indigo-300 block flex items-center gap-1">
+                <Sparkles className="w-4 h-4 shrink-0" /> Interview Presentation Advice:
+              </span>
+              <p className="text-indigo-200 leading-relaxed">
+                "When explaining this project to hiring managers, frame it around vector embedding latency and database indexing. Highlight how you optimized nearest-neighbor query times for instant user responses."
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
