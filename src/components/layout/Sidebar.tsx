@@ -18,9 +18,9 @@ import {
   Briefcase,
   ChevronDown,
   ChevronRight,
+  X
 } from 'lucide-react';
 
-// ── Navigation grouped into logical sections ──────────────────────────────
 const navSections = [
   {
     label: 'Overview',
@@ -65,17 +65,20 @@ const navSections = [
   },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+  isMobile?: boolean;
+}
+
+export default function Sidebar({ onNavigate, isMobile }: SidebarProps) {
   const pathname = usePathname();
 
-  // Initially collapse all except the section that contains the active route
   const initialOpen: Record<string, boolean> = {};
   navSections.forEach(sec => {
     initialOpen[sec.label] = sec.items.some(
       item => pathname === item.href || (pathname === '/' && item.href === '/dashboard')
     );
   });
-  // Always keep Overview open
   initialOpen['Overview'] = true;
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(initialOpen);
@@ -84,20 +87,32 @@ export default function Sidebar() {
     setOpenSections(prev => ({ ...prev, [label]: !prev[label] }));
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between h-screen sticky top-0">
-      <div className="flex flex-col min-h-0">
-        {/* ── Brand header ────────────────────────────────────── */}
-        <div className="p-5 border-b border-slate-800 flex items-center gap-3 shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
-            <Briefcase className="w-5 h-5" />
+    <aside className={`w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between h-full ${!isMobile ? 'sticky top-0 h-screen' : ''}`}>
+      <div className="flex flex-col min-h-0 flex-1">
+        {/* Brand Header */}
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
+              <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <div>
+              <h1 className="font-bold text-white tracking-wide text-sm sm:text-base leading-tight">Career Copilot</h1>
+              <span className="text-[10px] sm:text-xs text-indigo-400 font-medium">Production AI Platform</span>
+            </div>
           </div>
-          <div>
-            <h1 className="font-bold text-white tracking-wide text-base leading-tight">Career Copilot</h1>
-            <span className="text-xs text-indigo-400 font-medium">Production AI Platform</span>
-          </div>
+
+          {/* Close button on mobile */}
+          {isMobile && (
+            <button
+              onClick={onNavigate}
+              className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
-        {/* ── Grouped navigation ──────────────────────────────── */}
+        {/* Grouped Navigation */}
         <nav
           className="px-3 py-3 space-y-1 overflow-y-auto flex-1"
           aria-label="Main navigation"
@@ -108,7 +123,6 @@ export default function Sidebar() {
               item => pathname === item.href || (pathname === '/' && item.href === '/dashboard')
             );
 
-            // Single-item sections (Overview, Admin) render flat
             if (section.items.length === 1) {
               const item = section.items[0];
               const isActive = pathname === item.href || (pathname === '/' && item.href === '/dashboard');
@@ -117,6 +131,7 @@ export default function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={onNavigate}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     isActive
                       ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
@@ -130,7 +145,6 @@ export default function Sidebar() {
               );
             }
 
-            // Multi-item sections get a collapsible group header
             return (
               <div key={section.label} className="space-y-0.5">
                 <button
@@ -158,6 +172,7 @@ export default function Sidebar() {
                         <Link
                           key={item.name}
                           href={item.href}
+                          onClick={onNavigate}
                           aria-current={isActive ? 'page' : undefined}
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                             isActive
@@ -178,7 +193,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* ── Profile footer ──────────────────────────────────────── */}
+      {/* Profile Footer */}
       <div className="p-4 border-t border-slate-800 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-semibold text-xs text-white">

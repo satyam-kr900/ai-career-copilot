@@ -1,5 +1,5 @@
 import './globals.css';
-import Sidebar from '@/components/layout/Sidebar';
+import AppLayout from '@/components/layout/AppLayout';
 
 export const metadata = {
   title: 'AI Career Copilot - Advanced Resume Analyzer & Career Platform',
@@ -13,11 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 flex min-h-screen antialiased">
-        <Sidebar />
-        <main className="flex-1 flex flex-col min-w-0 bg-slate-950 overflow-y-auto">
-          {children}
-        </main>
+      <body className="bg-slate-950 text-slate-100 min-h-screen antialiased">
+        <AppLayout>{children}</AppLayout>
       </body>
     </html>
   );

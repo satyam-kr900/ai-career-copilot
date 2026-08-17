@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from '@/components/layout/Header';
 import DemoBanner from '@/components/common/DemoBanner';
 import FileUploader from '@/components/resume/FileUploader';
 import ATSScoreCard from '@/components/resume/ATSScoreCard';
@@ -10,7 +9,6 @@ import { ParsedResume, ATSScoreBreakdown } from '@/types';
 import { Award, Target, Sparkles, FileText, ArrowRight, Info } from 'lucide-react';
 import Link from 'next/link';
 
-// ── Demo defaults ─────────────────────────────────────────────────────────
 const DEMO_RESUME: ParsedResume = {
   name: 'Satyam Kumar',
   email: 'satyam.developer@example.com',
@@ -86,7 +84,6 @@ const DEMO_ATS: ATSScoreBreakdown = {
   ],
 };
 
-// ── Metric tooltip definitions ────────────────────────────────────────────
 const METRIC_TOOLTIPS: Record<string, string> = {
   'ATS Score':        'Overall weighted compatibility of your resume with Applicant Tracking Systems, combining keyword density, skill coverage, and formatting (0–100).',
   'Career Readiness': 'Composite score across resume quality, project depth, experience, and interview preparedness — not limited to one job posting.',
@@ -95,7 +92,6 @@ const METRIC_TOOLTIPS: Record<string, string> = {
   'Resume Quality':   'Structural completeness of your resume — section coverage, action verbs, completeness, and ATS readability formatting.',
 };
 
-// ── Small tooltip component ───────────────────────────────────────────────
 function MetricTooltip({ text }: { text: string }) {
   const [visible, setVisible] = useState(false);
   return (
@@ -114,7 +110,7 @@ function MetricTooltip({ text }: { text: string }) {
       {visible && (
         <span
           role="tooltip"
-          className="absolute z-50 left-5 -top-1 w-64 bg-slate-800 border border-slate-700 rounded-xl p-3 text-[11px] text-slate-300 leading-relaxed shadow-xl pointer-events-none"
+          className="absolute z-50 left-5 -top-1 w-56 sm:w-64 bg-slate-800 border border-slate-700 rounded-xl p-3 text-[11px] text-slate-300 leading-relaxed shadow-xl pointer-events-none"
         >
           {text}
         </span>
@@ -123,7 +119,6 @@ function MetricTooltip({ text }: { text: string }) {
   );
 }
 
-// ── Data-source badge ─────────────────────────────────────────────────────
 function DataSourceBadge({ isDemo }: { isDemo: boolean }) {
   return (
     <span
@@ -139,7 +134,6 @@ function DataSourceBadge({ isDemo }: { isDemo: boolean }) {
   );
 }
 
-// ── Score metric card ──────────────────────────────────────────────────────
 function MetricCard({
   label, value, unit, color, barColor, tooltipText, icon: Icon,
 }: {
@@ -147,16 +141,16 @@ function MetricCard({
   tooltipText: string; icon: React.ElementType;
 }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2">
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
-          <span>{label}</span>
+          <span className="truncate">{label}</span>
           <MetricTooltip text={tooltipText} />
         </div>
-        <Icon className={`w-4 h-4 ${color}`} />
+        <Icon className={`w-4 h-4 ${color} shrink-0`} />
       </div>
       <div className="flex items-baseline gap-1">
-        <span className={`text-2xl font-black ${color}`}>{value}</span>
+        <span className={`text-xl sm:text-2xl font-black ${color}`}>{value}</span>
         <span className="text-xs text-slate-400">{unit ?? '/ 100'}</span>
       </div>
       <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
@@ -166,7 +160,6 @@ function MetricCard({
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const [isDemo, setIsDemo] = useState(true);
   const [parsed, setParsed] = useState<ParsedResume>(DEMO_RESUME);
@@ -178,114 +171,108 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
-      <Header title="Career Copilot Dashboard" />
+    <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 py-4 sm:py-6 pb-12">
+      <DemoBanner />
 
-      <div className="px-6 space-y-6">
-        <DemoBanner />
+      {/* Data Source Indicator */}
+      <div className="flex flex-wrap items-center gap-3">
+        <DataSourceBadge isDemo={isDemo} />
+        {isDemo && (
+          <span className="text-[11px] sm:text-xs text-slate-500">
+            Upload your own resume below to replace demo scores with your real data.
+          </span>
+        )}
+      </div>
 
-        {/* ── Data Source Indicator ─────────────────────────── */}
-        <div className="flex items-center gap-3">
-          <DataSourceBadge isDemo={isDemo} />
-          {isDemo && (
-            <span className="text-[11px] text-slate-500">
-              Upload your own resume below to replace demo scores with your real data.
-            </span>
-          )}
-        </div>
+      {/* Overview Metric Cards Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <MetricCard
+          label="ATS Score"
+          value={atsAnalysis.overallScore}
+          color="text-indigo-300"
+          barColor="bg-indigo-500"
+          tooltipText={METRIC_TOOLTIPS['ATS Score']}
+          icon={Award}
+        />
+        <MetricCard
+          label="Career Readiness"
+          value={84}
+          color="text-emerald-300"
+          barColor="bg-emerald-500"
+          tooltipText={METRIC_TOOLTIPS['Career Readiness']}
+          icon={Target}
+        />
+        <MetricCard
+          label="Skill Match"
+          value={atsAnalysis.skillsMatch}
+          unit="%"
+          color="text-cyan-300"
+          barColor="bg-cyan-500"
+          tooltipText={METRIC_TOOLTIPS['Skill Match']}
+          icon={Sparkles}
+        />
+        <MetricCard
+          label="Job Match"
+          value={91}
+          unit="%"
+          color="text-amber-300"
+          barColor="bg-amber-500"
+          tooltipText={METRIC_TOOLTIPS['Job Match']}
+          icon={Target}
+        />
+        <MetricCard
+          label="Resume Quality"
+          value={parsed.completenessScore}
+          color="text-indigo-300"
+          barColor="bg-indigo-400"
+          tooltipText={METRIC_TOOLTIPS['Resume Quality']}
+          icon={FileText}
+        />
+      </div>
 
-        {/* ── Overview Metric Cards ─────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <MetricCard
-            label="ATS Score"
-            value={atsAnalysis.overallScore}
-            color="text-indigo-300"
-            barColor="bg-indigo-500"
-            tooltipText={METRIC_TOOLTIPS['ATS Score']}
-            icon={Award}
-          />
-          <MetricCard
-            label="Career Readiness"
-            value={84}
-            color="text-emerald-300"
-            barColor="bg-emerald-500"
-            tooltipText={METRIC_TOOLTIPS['Career Readiness']}
-            icon={Target}
-          />
-          <MetricCard
-            label="Skill Match"
-            value={atsAnalysis.skillsMatch}
-            unit="%"
-            color="text-cyan-300"
-            barColor="bg-cyan-500"
-            tooltipText={METRIC_TOOLTIPS['Skill Match']}
-            icon={Sparkles}
-          />
-          <MetricCard
-            label="Job Match"
-            value={91}
-            unit="%"
-            color="text-amber-300"
-            barColor="bg-amber-500"
-            tooltipText={METRIC_TOOLTIPS['Job Match']}
-            icon={Target}
-          />
-          <MetricCard
-            label="Resume Quality"
-            value={parsed.completenessScore}
-            color="text-indigo-300"
-            barColor="bg-indigo-400"
-            tooltipText={METRIC_TOOLTIPS['Resume Quality']}
-            icon={FileText}
-          />
-        </div>
-
-        {/* ── Upload + ATS Card + Chart ─────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <h3 className="font-bold text-slate-100 text-sm">Upload New Resume Version</h3>
-              <FileUploader onParsed={handleParsed} />
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-              <h3 className="font-bold text-slate-100 text-sm">Copilot Quick Tools</h3>
-              <div className="space-y-2">
-                {[
-                  { name: 'Job-Specific Tailoring',   href: '/resume-optimizer', icon: Sparkles },
-                  { name: 'Missing Skills Gap Matrix', href: '/skill-gap',        icon: Target   },
-                  { name: 'AI Cover Letter Generator', href: '/cover-letter',     icon: FileText },
-                  { name: 'Start AI Mock Interview',   href: '/interview-prep',   icon: Award    },
-                ].map((act, i) => {
-                  const Icon = act.icon;
-                  return (
-                    <Link
-                      key={i}
-                      href={act.href}
-                      className="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-xs font-medium text-slate-200 transition"
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <Icon className="w-4 h-4 text-indigo-400" /> {act.name}
-                      </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+      {/* Upload + ATS Card + Chart Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
+            <h3 className="font-bold text-slate-100 text-sm">Upload New Resume Version</h3>
+            <FileUploader onParsed={handleParsed} />
           </div>
 
-          <div className="lg:col-span-2 space-y-6">
-            {/* Resume sections are anchored here so ATSScoreCard links work */}
-            <div id="resume-section-summary">
-              <ATSScoreCard ats={atsAnalysis} />
+          {/* Quick Actions */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+            <h3 className="font-bold text-slate-100 text-sm">Copilot Quick Tools</h3>
+            <div className="space-y-2">
+              {[
+                { name: 'Job-Specific Tailoring',   href: '/resume-optimizer', icon: Sparkles },
+                { name: 'Missing Skills Gap Matrix', href: '/skill-gap',        icon: Target   },
+                { name: 'AI Cover Letter Generator', href: '/cover-letter',     icon: FileText },
+                { name: 'Start AI Mock Interview',   href: '/interview-prep',   icon: Award    },
+              ].map((act, i) => {
+                const Icon = act.icon;
+                return (
+                  <Link
+                    key={i}
+                    href={act.href}
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-xs font-medium text-slate-200 transition"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Icon className="w-4 h-4 text-indigo-400 shrink-0" /> {act.name}
+                    </span>
+                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                  </Link>
+                );
+              })}
             </div>
+          </div>
+        </div>
 
-            {/* Chart — pass hasHistory=false to show empty state */}
-            <div id="resume-section-history">
-              <ScoreChart hasHistory={!isDemo} />
-            </div>
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div id="resume-section-summary">
+            <ATSScoreCard ats={atsAnalysis} />
+          </div>
+
+          <div id="resume-section-history">
+            <ScoreChart hasHistory={!isDemo} />
           </div>
         </div>
       </div>
