@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback, KeyboardEvent } from 'react';
-import { UploadCloud, FileText, CheckCircle2, Loader2, AlertCircle, X } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Loader2, AlertCircle, X } from 'lucide-react';
 import { ParsedResume } from '@/types';
 
 interface FileUploaderProps {
@@ -36,7 +36,6 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
     setState('uploading');
     setProgress(0);
 
-    // Animate progress bar
     const interval = setInterval(() => {
       setProgress(p => (p < 85 ? p + 12 : p));
     }, 180);
@@ -75,7 +74,6 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
     if (file) processFile(file);
   };
 
-  // Keyboard accessibility: press Enter or Space to open file picker
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -91,7 +89,6 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  // ── Styling per state ──────────────────────────────────────────────
   const containerStyle: Record<UploadState, string> = {
     idle:       'border-slate-700 bg-slate-900/50 hover:border-indigo-500',
     dragging:   'border-indigo-400 bg-indigo-950/40 scale-[1.01]',
@@ -102,11 +99,11 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
   };
 
   const IconEl = () => {
-    if (state === 'uploading') return <Loader2 className="w-7 h-7 animate-spin text-indigo-400" />;
-    if (state === 'success')   return <CheckCircle2 className="w-7 h-7 text-emerald-400" />;
-    if (state === 'error-type' || state === 'error-size') return <AlertCircle className="w-7 h-7 text-rose-400" />;
-    if (state === 'dragging')  return <UploadCloud className="w-7 h-7 text-indigo-300 animate-bounce" />;
-    return <UploadCloud className="w-7 h-7 text-indigo-400" />;
+    if (state === 'uploading') return <Loader2 className="w-6 h-6 sm:w-7 sm:h-7 animate-spin text-indigo-400" />;
+    if (state === 'success')   return <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-400" />;
+    if (state === 'error-type' || state === 'error-size') return <AlertCircle className="w-6 h-6 sm:w-7 sm:h-7 text-rose-400" />;
+    if (state === 'dragging')  return <UploadCloud className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-300 animate-bounce" />;
+    return <UploadCloud className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-400" />;
   };
 
   const headingText = () => {
@@ -135,7 +132,7 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
       onDragLeave={handleDragLeave}
       onKeyDown={handleKeyDown}
       onClick={() => inputRef.current?.click()}
-      className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer relative transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${containerStyle[state]}`}
+      className={`border-2 border-dashed rounded-2xl p-4 sm:p-8 text-center cursor-pointer relative transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${containerStyle[state]}`}
     >
       <input
         ref={inputRef}
@@ -148,8 +145,7 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
       />
 
       <div className="flex flex-col items-center justify-center space-y-3">
-        {/* Icon area */}
-        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+        <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
           state === 'success'    ? 'bg-emerald-500/15' :
           state === 'dragging'   ? 'bg-indigo-500/25 scale-110' :
           state === 'uploading'  ? 'bg-indigo-500/15' :
@@ -160,7 +156,7 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
         </div>
 
         <div>
-          <h3 className={`font-semibold text-sm ${
+          <h3 className={`font-semibold text-xs sm:text-sm ${
             state === 'success'                           ? 'text-emerald-300' :
             (state === 'error-type' || state === 'error-size') ? 'text-rose-300' :
             state === 'dragging'                          ? 'text-indigo-200' :
@@ -168,10 +164,9 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
           }`}>
             {headingText()}
           </h3>
-          <p className="text-xs text-slate-400 mt-1">{subText()}</p>
+          <p className="text-[11px] sm:text-xs text-slate-400 mt-1">{subText()}</p>
         </div>
 
-        {/* Progress bar (uploading only) */}
         {state === 'uploading' && (
           <div className="w-full max-w-xs">
             <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
@@ -184,11 +179,10 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
           </div>
         )}
 
-        {/* Idle / dragging CTA button */}
         {(state === 'idle' || state === 'dragging') && (
           <button
             type="button"
-            className={`px-4 py-2 rounded-xl text-xs font-semibold border pointer-events-none transition ${
+            className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-semibold border pointer-events-none transition flex items-center justify-center ${
               state === 'dragging'
                 ? 'bg-indigo-600 text-white border-indigo-500'
                 : 'bg-slate-800 text-slate-200 border-slate-700'
@@ -198,23 +192,21 @@ export default function FileUploader({ onParsed }: FileUploaderProps) {
           </button>
         )}
 
-        {/* Error retry button */}
         {(state === 'error-type' || state === 'error-size') && (
           <button
             type="button"
             onClick={reset}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-rose-500 hover:text-rose-300 transition"
+            className="min-h-[44px] flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-rose-500 hover:text-rose-300 transition"
           >
             <X className="w-3.5 h-3.5" /> Try Another File
           </button>
         )}
 
-        {/* Success reset */}
         {state === 'success' && (
           <button
             type="button"
             onClick={reset}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-indigo-500 transition"
+            className="min-h-[44px] flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-indigo-500 transition"
           >
             <UploadCloud className="w-3.5 h-3.5" /> Upload Different Resume
           </button>

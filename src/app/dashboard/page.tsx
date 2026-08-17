@@ -103,14 +103,14 @@ function MetricTooltip({ text }: { text: string }) {
         onMouseLeave={() => setVisible(false)}
         onFocus={() => setVisible(true)}
         onBlur={() => setVisible(false)}
-        className="text-slate-500 hover:text-slate-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 rounded"
+        className="min-h-[32px] min-w-[32px] flex items-center justify-center text-slate-500 hover:text-slate-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 rounded"
       >
         <Info className="w-3.5 h-3.5" />
       </button>
       {visible && (
         <span
           role="tooltip"
-          className="absolute z-50 left-5 -top-1 w-56 sm:w-64 bg-slate-800 border border-slate-700 rounded-xl p-3 text-[11px] text-slate-300 leading-relaxed shadow-xl pointer-events-none"
+          className="absolute z-50 left-4 -top-1 w-52 xs:w-60 sm:w-64 bg-slate-800 border border-slate-700 rounded-xl p-3 text-[11px] text-slate-300 leading-relaxed shadow-xl pointer-events-none"
         >
           {text}
         </span>
@@ -141,9 +141,9 @@ function MetricCard({
   tooltipText: string; icon: React.ElementType;
 }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-2">
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-5 space-y-2">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+        <div className="flex items-center gap-1 text-xs font-medium text-slate-400 min-w-0">
           <span className="truncate">{label}</span>
           <MetricTooltip text={tooltipText} />
         </div>
@@ -171,11 +171,11 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 py-4 sm:py-6 pb-12">
+    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-4 sm:py-6 pb-12">
       <DemoBanner />
 
       {/* Data Source Indicator */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
         <DataSourceBadge isDemo={isDemo} />
         {isDemo && (
           <span className="text-[11px] sm:text-xs text-slate-500">
@@ -185,7 +185,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Overview Metric Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
         <MetricCard
           label="ATS Score"
           value={atsAnalysis.overallScore}
@@ -238,7 +238,7 @@ export default function DashboardPage() {
             <FileUploader onParsed={handleParsed} />
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions Links (44px tap target height) */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
             <h3 className="font-bold text-slate-100 text-sm">Copilot Quick Tools</h3>
             <div className="space-y-2">
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                   <Link
                     key={i}
                     href={act.href}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-xs font-medium text-slate-200 transition"
+                    className="min-h-[44px] flex items-center justify-between p-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-xs font-medium text-slate-200 transition"
                   >
                     <span className="flex items-center gap-2.5">
                       <Icon className="w-4 h-4 text-indigo-400 shrink-0" /> {act.name}

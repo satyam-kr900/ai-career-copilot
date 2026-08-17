@@ -48,13 +48,13 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
 
           <div>
             <h3 className="text-base sm:text-lg font-bold text-slate-100">Weighted ATS Compatibility Score</h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-md">
+            <p className="text-xs text-slate-400 mt-1 max-w-md leading-relaxed">
               Calculated using weighted keyword matching, skill vector alignment, project relevance, and ATS section readability.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 w-full md:w-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 w-full md:w-auto">
           {[
             { label: 'Keyword Match', value: `${ats.keywordMatch}%`,      color: 'text-indigo-300' },
             { label: 'Skills Match',  value: `${ats.skillsMatch}%`,       color: 'text-cyan-300'   },
@@ -72,7 +72,7 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
       {/* Itemised Progress Bars */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
         <h4 className="font-bold text-slate-200 text-xs sm:text-sm flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-indigo-400" /> Itemized ATS Component Breakdown
+          <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" /> Itemized ATS Component Breakdown
         </h4>
 
         <div className="space-y-3">
@@ -85,11 +85,11 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
             { label: 'Formatting & Readability',score: ats.formattingCompatibility, weight: '10%', section: '#resume-section-summary' },
           ].map((item, idx) => (
             <div key={idx} className="space-y-1">
-              <div className="flex justify-between text-xs font-medium">
+              <div className="flex justify-between items-center text-xs font-medium min-h-[36px]">
                 <a
                   href={item.section}
                   title={`View ${item.label} in your resume`}
-                  className="text-slate-300 hover:text-indigo-300 underline-offset-2 hover:underline transition truncate pr-2"
+                  className="text-slate-300 hover:text-indigo-300 underline-offset-2 hover:underline transition truncate pr-2 py-1"
                 >
                   {item.label}
                   <span className="text-slate-500 ml-1">({item.weight})</span>
@@ -113,11 +113,11 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
           <h4 className="font-bold text-emerald-300 text-xs sm:text-sm flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" /> Positive ATS Factors
+            <CheckCircle2 className="w-4 h-4 shrink-0" /> Positive ATS Factors
           </h4>
           <ul className="space-y-2 text-xs text-slate-300">
             {ats.positiveFactors.map((pf, i) => (
-              <li key={i} className="flex items-start gap-2 bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-2.5">
+              <li key={i} className="flex items-start gap-2 bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-2.5 leading-relaxed">
                 <span className="text-emerald-400 mt-0.5 shrink-0">•</span>
                 <span>{pf}</span>
               </li>
@@ -127,11 +127,11 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
           <h4 className="font-bold text-rose-300 text-xs sm:text-sm flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4" /> Areas for ATS Improvement
+            <AlertTriangle className="w-4 h-4 shrink-0" /> Areas for ATS Improvement
           </h4>
           <ul className="space-y-2 text-xs text-slate-300">
             {ats.negativeFactors.map((nf, i) => (
-              <li key={i} className="flex items-start gap-2 bg-rose-500/5 border border-rose-500/10 rounded-lg p-2.5">
+              <li key={i} className="flex items-start gap-2 bg-rose-500/5 border border-rose-500/10 rounded-lg p-2.5 leading-relaxed">
                 <span className="text-rose-400 mt-0.5 shrink-0">•</span>
                 <span>{nf}</span>
               </li>
@@ -143,7 +143,7 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
       {/* Why This Score */}
       <div className="bg-indigo-950/30 border border-indigo-500/20 rounded-2xl p-4 sm:p-5 text-xs space-y-3">
         <h4 className="font-bold text-indigo-300 text-xs sm:text-sm flex items-center gap-2">
-          <HelpCircle className="w-4 h-4" /> Why This Score Was Generated
+          <HelpCircle className="w-4 h-4 shrink-0" /> Why This Score Was Generated
         </h4>
         <p className="text-indigo-200/70 text-[11px] leading-relaxed">
           Each bullet below is linked to the resume section that directly influenced that part of the score.
@@ -156,7 +156,7 @@ export default function ATSScoreCard({ ats }: { ats: ATSScoreBreakdown }) {
               {link ? (
                 <a
                   href={link}
-                  className="text-indigo-200/90 leading-relaxed hover:text-indigo-100 underline underline-offset-2 transition"
+                  className="text-indigo-200/90 leading-relaxed hover:text-indigo-100 underline underline-offset-2 transition py-0.5 min-h-[36px] flex items-center"
                 >
                   {exp}
                 </a>
